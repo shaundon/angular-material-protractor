@@ -24,6 +24,15 @@ AMPtor.clickElementByModel('ctrl.myField');
 // ..and so on
 ```
 
+## Deploying to NPM
+
+1. Update the changelog
+1. Bump the version in `package.json`
+1. commit + push changes
+1. `npm publish`
+1. `git tag [the version]`
+1. `git push --tags`
+
 Credits:
 * [@shaundon](https://github.com/shaundon)
 * [@sadams](https://github.com/sadams)
