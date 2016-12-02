@@ -1,6 +1,11 @@
-let config = {
-    stupidMDSelectSleepTimeoutMS: 300,
-    stupidMDMenuSleepTimeoutMS: 300
+const EC = protractor.ExpectedConditions;
+
+const waitForElementToBeClickable = exports.waitForElementToBeClickable = function (element) {
+    return browser.wait(EC.elementToBeClickable(element), 1000);
+};
+
+const waitForMDBackdropToDisappear = exports.waitForMDBackdropToDisappear = function () {
+    return browser.wait(EC.not(EC.presenceOf($('md-backdrop'))), 1000);
 };
 
 // Checks if an <input> has the right value.
@@ -106,43 +111,43 @@ exports.selectOptionInMdSelectByModelByText = (model, textToFind) => {
     return exports.selectOptionInMdSelectByText(element(by.model(model)), textToFind);
 };
 
-exports.selectOptionInMdSelectByText = (mdSelect, textToFind) => {
-    const mdSelectOptions = by.css('.md-select-menu-container.md-active.md-clickable md-option');
-    // click to open the dropdown
-    mdSelect.click();
-    // After the click on md-select, and before the options are clickable, MD puts in an odd overlay.
-    // ... so we need to slow our browser down so it doesn't try and click the option too early.
-    // Note: other solutions, like `browser.waitForAngular()` or `isElementPresent(mdSelectOptions)` aren't working.
-    browser.sleep(config.stupidMDSelectSleepTimeoutMS);
-    // Iterate through all visible <md-option> on the page.
-    let matchingOption;
-    element.all(mdSelectOptions).each((option) => {
-        var innerElement = option.element(by.css('div.md-text'));
-        innerElement.getText().then((text) => {
-            if (text === textToFind) {
-                if (matchingOption) {
-                    throw new Error(`multiple md-select options matching the same ${textToFind}`);
+exports.selectOptionInMdSelectByText = function(selectElm, text) {
+    if (!selectElm.element) {
+        selectElm = $(selectElm);
+    }
+    selectElm.click();
+    waitForElementToBeClickable(selectElm);
+    const mdSelectContainer = element(by.css('.md-select-menu-container.md-active.md-clickable'));
+    let duplicateMatch = false;
+    waitForElementToBeClickable(mdSelectContainer);
+    return mdSelectContainer
+        .all(by.css('md-option'))
+        .filter(function (option) {
+            return option.getText().then(function (optionText) {
+                if (text === optionText) {
+                    if (duplicateMatch) {
+                        throw new Error(`multiple md-select options matching the same ${optionText}`);
+                    } else {
+                        duplicateMatch = true;
+                        return true
+                    }
                 }
-                // Found the right option - now click it.
-                matchingOption = option;
+            });
+        }).then(function (opt) {
+            if (opt.length && opt[0].click) {
+                opt[0].click();
+                waitForMDBackdropToDisappear()
+            } else {
+                throw new Error(`no matching options found for text: ${text}`)
             }
-        });
-    }).then(() => {
-        if (!matchingOption) {
-            throw new Error(`${textToFind} could not be found in md-select options: ${mdSelect.locator()}`);
-        }
-        matchingOption.click();
-        browser.sleep(config.stupidMDSelectSleepTimeoutMS);
-    });
+        })
 };
 
 exports.clickMDContextMenuItem = function (openContextMenu, text) {
     const menuItem = element(by.cssContainingText('.md-open-menu-container.md-active.md-clickable a', text));
+    waitForElementToBeClickable(openContextMenu);
     openContextMenu.click();
-    browser.sleep(config.stupidMDMenuSleepTimeoutMS);
-    menuItem.click()
-};
-
-exports.changeDefaultOptions = (options) => {
-    Object.assign(config, options);
+    waitForElementToBeClickable(menuItem);
+    menuItem.click();
+    waitForMDBackdropToDisappear()
 };
