@@ -1,6 +1,6 @@
 {
   "name": "angular-material-protractor",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A collection of utility functions to make testing Angular Material based UIs easier to test.",
   "main": "index.js",
   "scripts": {
