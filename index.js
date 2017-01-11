@@ -151,3 +151,23 @@ exports.clickMDContextMenuItem = function (openContextMenu, text) {
     menuItem.click();
     waitForMDBackdropToDisappear()
 };
+
+exports.selectMdRadioButtonByText = (radioGroupElm, text) => {
+  if (!radioGroupElm.element) {
+    radioGroupElm = $(radioGroupElm);
+  }
+  return radioGroupElm
+    .all(by.tagName('md-radio-button'))
+    .filter(function(radioBtn) {
+      return radioBtn.getText().then(function(radioText) {
+        if (radioText === text) {
+          return true;
+        }
+      })
+    }).then(function(opt) {
+      if (opt.length && opt[0].click) {
+        opt[0].click();
+      }
+    })
+  ;
+};
