@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.1.0 - 2017-01-11
+### Added
+- Function for clicking `md-radio-button` elements by text.
+
 ## 3.0.0 - 2016-12-02
 ### Changed
 - improved performance by removing the arbitrary wait for MD select and menu items to complete rendering
@@ -17,4 +21,3 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ---
 
 [Changelog format](http://keepachangelog.com)
-
