@@ -171,3 +171,18 @@ exports.selectMdRadioButtonByText = (radioGroupElm, text) => {
     })
   ;
 };
+
+exports.elementHasClass = (element, cls) => {
+    return element.getAttribute('class').then((classes) => classes.split(' ').includes(cls));
+};
+
+exports.blurFieldAndCheckForError = (model, ngMessageType, isError) => {
+
+    const foundElement = element(by.model(model));
+
+    // Press tab, which will blur the field.
+    foundElement.sendKeys(protractor.Key.TAB);
+
+    // See if it does, or doesn't have an error.
+    expect(exports.elementHasClass(foundElement, `ng-invalid-${ngMessageType}`).toEqual(isError));
+};
