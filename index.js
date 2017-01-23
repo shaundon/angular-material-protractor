@@ -176,13 +176,28 @@ exports.elementHasClass = (element, cls) => {
     return element.getAttribute('class').then((classes) => classes.split(' ').includes(cls));
 };
 
-exports.blurFieldAndCheckForError = (model, ngMessageType, isError) => {
-
+exports.blurFieldAndCheckForError = (model, ngMessageType) => {
     const foundElement = element(by.model(model));
 
     // Press tab, which will blur the field.
     foundElement.sendKeys(protractor.Key.TAB);
 
-    // See if it does, or doesn't have an error.
-    expect(exports.elementHasClass(foundElement, `ng-invalid-${ngMessageType}`).toEqual(isError));
+    // Add a sleep because this stuff is inconsistent af.
+    browser.sleep(500);
+
+    // See if it has the error.
+    expect(exports.elementHasClass(foundElement, `ng-invalid-${ngMessageType}`).toBeTruthy());
+};
+
+exports.blurFieldAndCheckIsValud = (model) => {
+    const foundElement = element(by.model(model));
+
+    // Press tab. This will blur the field in question.
+    foundElement.sendKeys(protractor.Key.TAB);
+
+    // Add a sleep because this stuff is inconsistent af.
+    browser.sleep(500);
+
+    // See if it has the error.
+    expect(exports.elementHasClass(foundElement, 'ng-valid')).toBeTruthy();
 };
