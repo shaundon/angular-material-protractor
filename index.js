@@ -144,7 +144,7 @@ exports.selectOptionInMdSelectByText = function(selectElm, text) {
 };
 
 exports.clickMDContextMenuItem = function (openContextMenu, text) {
-    const menuItem = element(by.cssContainingText('.md-open-menu-container.md-active.md-clickable a', text));
+    const menuItem = element(by.cssContainingText('.md-open-menu-container.md-active.md-clickable .md-button', text));
     waitForElementToBeClickable(openContextMenu);
     openContextMenu.click();
     waitForElementToBeClickable(menuItem);
